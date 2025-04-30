@@ -13,7 +13,7 @@ pub fn file_reader(file_name: &str)-> Result<Vec<Pokemon>, Box<dyn Error>>{
             attack: f32::from_str(&r[12])?, defense: f32::from_str(&r[13])?, 
             spatk:f32::from_str(&r[14])?, spdef: f32::from_str(&r[15])?, 
             speed: f32::from_str(&r[16])?, total: i32::from_str(&r[17])?,
-            group: r[28git].to_string()};
+            group: r[28].to_string()};
         pokemon_list.push(pokemon);
     }
     Ok(pokemon_list)
