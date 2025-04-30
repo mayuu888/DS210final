@@ -6,54 +6,67 @@ use std::error::Error;
 use clustering::labelling;
 use clustering::info;
 fn main() -> Result<(), Box<dyn Error>>{
+    // reading the csv file
     let all_pokemon  = file_reader("pokemon_data.csv")?;
+    // getting the array of cluster numbers,centroid points for basic and special stats
     let (basic_num,basic_centroids, special_num, special_centroids) = clusters(&all_pokemon, 4,4);
     //println!("{:?}", basic_centroids);
     //println!("{:?}", special_centroids);
+    // assigns labelling for basic and special centroids
     let (basic_centroid_labels, special_centroid_labels) = labelling(&basic_centroids, &special_centroids);
     //print!("{:?}", centroid_labels);
-    // printing clusters, what pokemon is in what cluster and how many are in the cluster
     println!("basic stats:");
+    // printing all clusters, showing how many pokemon are in each cluster 
     for (c_num, label) in basic_centroid_labels.iter().enumerate() {
-        // for all pokemon in the cluster, filter by cluster and get name
+        // for all pokemon in the cluster zips with cluster number, filter by cluster 
+        // maps filtered results to just pokemon name, originaly did output all the 
+        // pokemon names for each cluster but looks too messy
+        // instead only prints out the number of pokemon in each cluster
         let members: Vec<_> = all_pokemon.iter()
             .zip(basic_num.iter())
             .filter(|&(_, &c)| c == c_num)  
             .map(|(p, _)| p.name.as_str())             
             .collect();
         println!(
-            "   cluster {} - {} ({} members)",
+            "   cluster {} - {} ({} pokemon)",
             c_num + 1,
             label,
             members.len(),
         );
     }
     println!("special stats:");
+    // loops for each cluster/ centroid labels which is same number
     for (c_num, label) in special_centroid_labels.iter().enumerate() {
-        // for all pokemon in the cluster, filter by cluster and get name
+        // for all pokemon in the cluster zips with cluster number, filter by cluster 
+        // maps filtered results to just pokemon name, originaly did output all the 
+        // pokemon names for each cluster but looks too messy
+        // instead only prints out the number of pokemon in each cluster
         let members: Vec<_> = all_pokemon.iter()
             .zip(special_num.iter())
             .filter(|&(_, &c)| c == c_num)  
             .map(|(p, _)| p.name.as_str())             
             .collect();
         println!(
-            "   cluster {} - {} ({} members)",
+            "   cluster {} - {} ({} pokemon)",
             c_num + 1,
             label,
             members.len(),
         );
     }
+    // calls the info method from clustering so that i get print out all the info
+    // ask user for info, all the clustering and result finding in this method
     info(&all_pokemon, &basic_centroid_labels,&basic_num,
         &special_centroid_labels,&special_num);
     Ok(())
-    
 }
 #[cfg(test)]
 mod tests{
+    // makes sure i can use everything all modules and stuff
     use super::*; 
     use super::pokemon::{Pokemon, file_reader, normalized_stats};
     use super::clustering::{clusters, labelling,cluster_map};
     use ndarray::array;
+    // made sime sample pokemon 
     fn create_test_pokemon() -> Vec<Pokemon> {
         vec![
             Pokemon {
