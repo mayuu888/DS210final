@@ -1,10 +1,11 @@
 mod pokemon;
 use pokemon::file_reader;
-use pokemon::Pokemon;
-fn main() {
-    let all_pokemon  = file_reader("pokemon_data.csv");
-    for p in all_pokemon.iter(){
-        println!("{:?}",p);
-    }
+use std::error::Error;
+use pokemon::normalized_stats;
+fn main() -> Result<(), Box<dyn Error>>{
+    let all_pokemon  = file_reader("pokemon_data.csv")?;
+    let stats = normalized_stats(&all_pokemon);
+    print!("{:?}", stats);
+    Ok(())
 
 }
